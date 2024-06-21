@@ -3,35 +3,58 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
       {% block title %}
         Django App
       {% endblock %}
     </title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"  rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <style>
+      .navbar {
+        background-color: #1f201d; /* Black background */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+      }
+      .navbar .nav-link,
+      .navbar .navbar-brand {
+        color: #ffffff !important; /* White text */
+      }
+      .nav-link:hover {
+        color: #cccccc !important; /* Slightly lighter text on hover */
+      }
+    </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">My Django App</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <nav class="navbar navbar-expand-lg">
+      <a class="navbar-brand" href="{% url 'home' %}">Taxi app</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Home</a>
+            <a class="nav-item nav-link" id="home" href="{% url 'home' %}" style="position: relative; font-size: 1.1em; text-decoration: none; font-weight: 500; margin-left: 40px;">
+              Home
+              <span class="nav-link-after"></span>
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
+            <a class="nav-item nav-link" id="about" href="/about" style="position: relative; font-size: 1.1em; text-decoration: none; font-weight: 500; margin-left: 40px;">
+              About
+              <span class="nav-link-after"></span>
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
+            <a class="nav-item nav-link" id="about" href="{% url 'contact' %}" style="position: relative; font-size: 1.1em; text-decoration: none; font-weight: 500; margin-left: 40px;">
+              Contact
+              <span class="nav-link-after"></span>
+            </a>
           </li>
         </ul>
       </div>
     </nav>
     <div class="container">{% block content %} {% endblock %}</div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

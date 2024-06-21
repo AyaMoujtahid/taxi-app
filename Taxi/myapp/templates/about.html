@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>About Us</title>
+    <style>
+        body {
+            background-color: #000000
+            
+        }
+
+        .wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            width: 50%;
+            text-align: center;
+            border-radius: 20px;
+        }
+
+        .wrapper h1, .wrapper p {
+            color: #090909;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>About Us</h1>
+        <p>Welcome to Taxi App, we are Aya and Sara and where we're revolutionizing urban mobility.</p> 
+        <p>Our platform seamlessly connects clients, drivers, and administrators, redefining how you travel across cities.</p> 
+            <p>Whether you're looking for a reliable ride or managing a fleet, Taxi App is your trusted partner in simplifying transportation.</p> 
+            <p>Join us in shaping the future of urban travel today.</p>
+    </div>
+</body>
+</html>
+{% endblock %}
