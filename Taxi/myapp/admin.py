@@ -1,5 +1,8 @@
+# In admin.py
 from django.contrib import admin
-from .models import TodoItem
+from django.contrib.auth.admin import UserAdmin
+from .models import CustomUser, Client, TaxiDriver
 
-# Register your models here.
-admin.site.register(TodoItem)
+admin.site.register(CustomUser, UserAdmin)
+admin.site.register(Client)
+admin.site.register(TaxiDriver)

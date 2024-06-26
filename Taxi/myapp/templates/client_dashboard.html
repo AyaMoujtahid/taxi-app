@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="info" style="border: 2px solid rgb(74, 84, 82); visibility: hidden;"></div>
+<div id="msg">
+  {% for message in messages %}
+    <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ message }}
+    </div>
+  {% endfor %}
+</div>
+<div class="text-center" style="margin-bottom: 20px;">
+  <button id="demander_maintenant" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Demander maintenant!</button>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #4abf3d;">
+        <h5 class="modal-title text-center font-weight-bold" id="exampleModalLabel">Saisir les coordonnées du voyage</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form_demande">
+          <div class="form-group">
+            <label for="depart" class="col-form-label">Depart:</label>
+            <input type="text" class="form-control" id="depart">
+          </div>
+          <div class="form-group">
+            <label for="destination" class="col-form-label">Destination:</label>
+            <input type="text" class="form-control" id="destination">
+          </div>
+          <div class="form-group">
+            <label for="nombreDePlaces" class="col-form-label">Nombre de places:</label>
+            <input type="text" class="form-control" id="nombreDePlaces">
+          </div>
+        </form>
+        <div id="ajax-errors" class="alert alert-danger" role="alert" style="display: none;">
+          <strong>Whoops!</strong><br>
+          <span>Quelque chose ne marche pas ! S'il vous plaît vérifiez vos données.</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary btn-lg" id="demande_button">
+          <span id="Commander_button">Commander un Taxi</span>
+          <i id="Commander_icon" class="fas fa-taxi"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="map" style="height: 400px; margin-top: 20px;"></div>
+
+<!-- Leaflet and Leaflet Routing Machine CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.css" />
+
+<!-- Leaflet and Leaflet Routing Machine JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the map
+    var map = L.map('map').setView([34.0181, -6.8355], 13);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Detect user's location and add a marker
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var userLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
+        L.marker(userLatLng).addTo(map).bindPopup("Vous êtes ici").openPopup();
+        map.setView(userLatLng, 13);
+      }, function(error) {
+        console.error("Error occurred while retrieving location: " + error.message);
+      });
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+
+    // Fetch the coordinates from the server
+    var coordinates = JSON.parse('{{ coordinates|safe }}');
+    var waypoints_ = [];
+
+    // Convert the coordinates to LatLng objects
+    for (var key in coordinates) {
+      waypoints_.push(L.latLng(coordinates[key][0], coordinates[key][1]));
+    }
+
+    console.log(waypoints_);
+
+    // Add routing control
+    var control = L.Routing.control({
+      waypoints: waypoints_,
+      router: L.Routing.osrmv1({
+        serviceUrl: 'https://router.project-osrm.org/route/v1'
+      }),
+      lineOptions: {
+        styles: [{ color: 'red', opacity: 1, weight: 5 }]
+      },
+      show: false
+    }).addTo(map);
+  });
+
+  $(document).ready(function() {
+    $('#demande_button').click(function() {
+      var depart = $('#depart').val();
+      var destination = $('#destination').val();
+      var nombreDePlaces = $('#nombreDePlaces').val();
+
+      var Commander_button = $('#Commander_button');
+      Commander_button.html('Attendez SVP...');
+
+      var Commander_icon = $('#Commander_icon');
+      Commander_icon.removeClass('fa-taxi').addClass('fa-spinner fa-pulse');
+
+      $.ajax({
+        type: "POST",
+        url: "{% url 'client_dashboard' %}",
+        data: {
+          depart: depart,
+          destination: destination,
+          nombreDePlaces: nombreDePlaces,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function(response) {
+          $('#exampleModal').modal('hide');
+          $('#demander_maintenant').hide();
+          $("#info").css("visibility", "");
+          $('#info').html("Votre demande est diffusée à <b>1 TAXI</b>.<br>SVP, Attendez-vous qu'un chauffeur accepte votre demande <br> <i style='height: 35px;width: 35px;' class='fas fa-cog fa-spin'></i>");
+        },
+        error: function(response) {
+          var ajax_errors = $('#ajax-errors');
+          ajax_errors.css('display', 'block');
+          ajax_errors.find('strong').html('Whoops!');
+          ajax_errors.find('span').html("Quelque chose ne marche pas ! S'il vous plaît vérifiez vos données");
+        },
+        complete: function() {
+          Commander_button.html('Commander un Taxi');
+          Commander_icon.removeClass('fa-spinner fa-pulse').addClass('fa-taxi');
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

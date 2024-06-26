@@ -1,172 +1,298 @@
 {% extends "base.html" %}
 {% block title %}Home Page{% endblock %}
 {% block content %}
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        background-color: #000000
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <style>
+        *, *:before, *:after {
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background: linear-gradient(to right, #08090A 0%, #08090A 100%);
+            font-size: 12px;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+        }
+
+        .background {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            flex: 0 1 700px;
+            margin: auto;
+            padding: 10px;
+        }
+
+        .screen {
+            position: relative;
+            background: #3e3e3e;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .screen:after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            bottom: 0;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .4);
+            z-index: -1;
+        }
+
+        .screen-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: #4d4d4f;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .screen-header-left {
+            margin-right: auto;
+        }
+
+        .screen-header-button {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 3px;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .screen-header-button.close {
+            background: #ed1c6f;
+        }
+
+        .screen-header-button.maximize {
+            background: #e8e925;
+        }
+
+        .screen-header-button.minimize {
+            background: #74c54f;
+        }
+
+        .screen-header-right {
+            display: flex;
+        }
+
+        .screen-header-ellipsis {
+            width: 3px;
+            height: 3px;
+            margin-left: 2px;
+            border-radius: 8px;
+            background: #999;
+        }
+
+        .screen-body {
+            display: flex;
+            padding: 40px;
+        }
+
+        .screen-body-item {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .screen-body-item.left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-title {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            color: #f4cd18;
+            font-size: 26px;
+        }
+
+        .app-title:after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 25px;
+            height: 4px;
+            background: #f4cd18;
+        }
+
+        .app-contact {
+            margin-top: auto;
+            font-size: 8px;
+            color: #888;
+        }
+
+        .app-form-group {
+            margin-bottom: 15px;
+        }
+
+        .app-form-group.message {
+            margin-top: 40px;
+        }
+
+        .app-form-group.buttons {
+            margin-bottom: 0;
+            text-align: right;
+        }
+
+        .app-form-control {
+            width: 100%;
+            padding: 10px 0;
+            background: none;
+            border: none;
+            border-bottom: 1px solid #666;
+            color: #ddd;
+            font-size: 14px;
+            text-transform: uppercase;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .app-form-control::placeholder {
+            color: #666;
+        }
+
+        .app-form-control:focus {
+            border-bottom-color: #ddd;
+        }
+
+        .app-form-button {
+            background: none;
+            border: none;
+            color: #f4cd18;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .app-form-button:hover {
+            color: #f4cd18;
+        }
+
         
-    }
 
-    .container {
-        max-width: 2000px;
-        margin: 0 auto;
-        padding: 0px;
-        text-align: center;
-    }
+        .dribbble {
+            width: 20px;
+            height: 20px;
+            margin: 0 5px;
+        }
 
-    .picture {
-        margin-bottom: 0px;
-        max-width: 100%;
-        height: auto;
-    }
+        .illustration {
+            position: relative;
+            right: 10%;
+            bottom: 10%;
+            width: 100%;
+            z-index: 1;
+        }
 
-    
-    .contact1 {
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .contact1-form-wrapper {
-        width: 80%;
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-    }
-    .contact1-form {
-        width: 50%;
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        padding: 45px;
-        border-radius: 10px;
-        box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
-    }
-    .contact1-form-title {
-        display: block;
-        font-size: 30px;
-        color: #333333;
-        line-height: 1.2;
-        text-align: center;
-        padding-bottom: 30px;
-    }
-    .wrap-input1 {
-        position: relative;
-        width: 100%;
-        z-index: 1;
-        margin-bottom: 20px;
-    }
-    .input1 {
-        font-family: inherit;
-        width: 100%;
-        border: 1px solid #e6e6e6;
-        border-radius: 5px;
-        padding: 10px;
-        background: transparent;
-    }
-    .shadow-input1 {
-        position: absolute;
-        display: block;
-        width: 100%;
-        height: 100%;
-        border-radius: 5px;
-        box-shadow: 0 0 0 0;
-        opacity: 0.5;
-        transition: all 0.3s;
-    }
-    .input1:focus + .shadow-input1 {
-        box-shadow: 0 0 8px 0px rgba(0, 0, 0, 0.1);
-    }
-    .container-contact1-form-btn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-top: 20px;
-    }
-    .contact1-form-btn {
-    position: relative;
-    display: inline-block;
-    padding: 10px 20px;
-    color: #060101;
-    font-size: 16px;
-    text-decoration: none;
-    text-transform: uppercase;
-    overflow: hidden;
-    transition: 0.5s;
-    margin-top: 40px;
-    letter-spacing: 4px;
-    background: transparent;
-    border: none;
-    }
-    .contact1-form-btn:hover {
-        background: #ccf613;
-    color: #a09f97;
-    border-radius: 5px;
-    box-shadow: 0 0 5px #ccf613, 0 0 25px #ccf613, 0 0 50px #ccf613, 0 0 100px #ccf613;
-    }
-    .contact1-image img {
-        width: 70%; /* Updated */
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-    }
-    .message-container {
-        display: none;
-        text-align: center;
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #4CAF50;
-        color: #fff;
-        border-radius: 5px;
-    }
-</style>
+        @media screen and (max-width: 520px) {
+            .screen-body {
+                flex-direction: column;
+                padding: 20px;
+            }
 
+            .screen-body-item.left {
+                margin-bottom: 30px;
+            }
 
+            .app-title {
+                flex-direction: row;
+            }
 
-    <div class="contact1">
-        <div class="contact1-form-wrapper">
-            <div class="contact1-form">
-                <form id="contact-form">
-                    <span class="contact1-form-title">
-                        Get in touch !
-                    </span>
+            .app-title span {
+                margin-right: 12px;
+            }
 
-                    <div class="wrap-input1 validate-input" data-validate="Name is required">
-                        <input class="input1" type="text" name="name" placeholder="Name">
-                        <span class="shadow-input1"></span>
-                    </div>
+            .app-title:after {
+                display: none;
+            }
+        }
 
-                    <div class="wrap-input1 validate-input" data-validate="Valid email is required: ex@abc.xyz">
-                        <input class="input1" type="text" name="email" placeholder="Email">
-                        <span class="shadow-input1"></span>
-                    </div>
+        @media screen and (max-width: 600px) {
+            .screen-body {
+                padding: 20px;
+            }
 
-                    <div class="wrap-input1 validate-input" data-validate="Subject is required">
-                        <input class="input1" type="text" name="subject" placeholder="Subject">
-                        <span class="shadow-input1"></span>
-                    </div>
-
-                    <div class="wrap-input1 validate-input" data-validate="Message is required">
-                        <textarea class="input1" name="message" placeholder="Message"></textarea>
-                        <span class="shadow-input1"></span>
-                    </div>
-
-                    <div class="container-contact1-form-btn">
-                        <button class="contact1-form-btn" type="submit">
-                            <span>
-                                Send Email
-                            </span>
-                        </button>
-                    </div>
-
-                    <div class="message-container" id="message-container"></div>
-                </form>
+            .screen-body-item {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="background">
+    <div class="container">
+        <div class="screen">
+            <div class="screen-header">
+                <div class="screen-header-left">
+                    <div class="screen-header-button close"></div>
+                    <div class="screen-header-button maximize"></div>
+                    <div class="screen-header-button minimize"></div>
+                </div>
+                <div class="screen-header-right">
+                    <div class="screen-header-ellipsis"></div>
+                    <div class="screen-header-ellipsis"></div>
+                    <div class="screen-header-ellipsis"></div>
+                </div>
             </div>
-            
+            <div class="screen-body">
+                <div class="screen-body-item left">
+                    <div class="app-title">
+                        <span>CONTACT</span>
+                        <span>US</span>
+                                        
+                       
+                    </div>
+                    <img class="illustration" src="../static/taximap.png" alt="Illustration">
+                    <div class="app-contact">CONTACT INFO : taxiapp@gmail.com</div>
+                </div>
+                <div class="screen-body-item">
+                    <div class="app-form">
+                        <div class="app-form-group">
+                            <input class="app-form-control" placeholder="NAME" value="Taxi app">
+                        </div>
+                        <div class="app-form-group">
+                            <input class="app-form-control" placeholder="EMAIL">
+                        </div>
+                        <div class="app-form-group">
+                            <input class="app-form-control" placeholder="CONTACT NO">
+                        </div>
+                        <div class="app-form-group message">
+                            <input class="app-form-control" placeholder="MESSAGE">
+                        </div>
+                        <div class="app-form-group buttons">
+                            <button class="app-form-button">CANCEL</button>
+                            <button class="app-form-button">SEND</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        
     </div>
+</div>
+</body>
+</html>
 
 <script>
     var contactForm = document.getElementById("contact-form");

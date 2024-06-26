@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        :root {
+            --background: #08090A;
+            --color: #79745C;
+            --primary-color: #f4cd18;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: var(--background);
+            color: var(--color);
+            transition: background 0.2s ease;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            position: relative;
+            width: 22.2rem;
+        }
+
+        .form-container {
+            border: 1px solid hsla(0, 0%, 65%, 0.158);
+            box-shadow: 0 0 36px 1px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+
+        .login-container form input {
+            display: block;
+            padding: 14.5px;
+            width: 100%;
+            margin: 2rem 0;
+            color: var(--color);
+            background-color: #9191911f;
+            border: none;
+            border-radius: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-container form button {
+            background-color: var(--primary-color);
+            color: var(--color);
+            padding: 13px;
+            border-radius: 5px;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            z-index: 1;
+        }
+
+        .circle {
+            width: 8rem;
+            height: 8rem;
+            background: var(--primary-color);
+            border-radius: 50%;
+            position: absolute;
+            z-index: 0;
+        }
+
+        .illustration {
+            position: absolute;
+            top: -40%;
+            right: -150px;
+            width: 100%;
+            z-index: 0;
+        }
+
+        .circle-one {
+            top: 0;
+            left: 0;
+            transform: translate(-45%, -45%);
+        }
+
+        .circle-two {
+            bottom: 0;
+            right: 0;
+            transform: translate(45%, 45%);
+        }
+
+        .register-forget {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .opacity {
+            opacity: 0.6;
+        }
+
+        .theme-btn-container {
+            position: absolute;
+            left: 0;
+            bottom: 2rem;
+        }
+
+        .theme-btn {
+            cursor: pointer;
+            transition: all 0.3s ease-in;
+        }
+
+        .theme-btn:hover {
+            width: 40px !important;
+        }
+    </style>
+</head>
+<body>
+    <section class="container">
+        <div class="login-container">
+            <div class="circle circle-one"></div>
+            <div class="form-container">
+                <img class="illustration" src="../../static/logor.png" alt="Illustration">                
+                <h1 class="opacity">LOGIN</h1>
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="USERNAME" required>
+                    <input type="password" name="password" placeholder="PASSWORD" required>
+                    <button type="submit" class="opacity">SUBMIT</button>
+                </form>
+            </div>
+            <div class="circle circle-two"></div>
+        </div>
+        <div class="theme-btn-container"></div>
+    </section>
+    <script>
+       const themes = [
+    {
+        background: "#08090A", // dark color
+        color: "#f4cd18",      // bright yellow text
+        primaryColor: "#727272" // muted neutral
+    },
+    {
+        background: "#08090A", // light grey-blue
+        color: "#08090A",      // dark text
+        primaryColor: "#79745C" // muted neutral highlight
+    },
+    {
+        background: "#08090A", // dark color
+        color: "#BFD7EA",      // light blue text
+        primaryColor: "#f4cd18" // bright yellow highlight
+    }
+];
+
+
+        const setTheme = (theme) => {
+            const root = document.querySelector(":root");
+            root.style.setProperty("--background", theme.background);
+            root.style.setProperty("--color", theme.color);
+            root.style.setProperty("--primary-color", theme.primaryColor);
+        };
+
+        const displayThemeButtons = () => {
+            const btnContainer = document.querySelector(".theme-btn-container");
+            themes.forEach((theme) => {
+                const div = document.createElement("div");
+                div.className = "theme-btn";
+                div.style.cssText = `background: ${theme.color}; width: 25px; height: 25px; margin: 5px`;
+                btnContainer.appendChild(div);
+                div.addEventListener("click", () => setTheme(theme));
+            });
+        };
+
+        displayThemeButtons();
+    </script>
+</body>
+</html>
+
+
+{% endblock %}
+

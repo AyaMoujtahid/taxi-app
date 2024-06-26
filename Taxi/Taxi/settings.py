@@ -68,6 +68,9 @@ TEMPLATES = [
     },
 ]
 
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/login/'
+
 WSGI_APPLICATION = 'Taxi.wsgi.application'
 
 
@@ -80,6 +83,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Update the AUTH_USER_MODEL in settings.py
+AUTH_USER_MODEL = 'myapp.CustomUser' 
+
 
 
 # Password validation

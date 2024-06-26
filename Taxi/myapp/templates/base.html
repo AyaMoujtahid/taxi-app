@@ -1,60 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>
-      {% block title %}
-        Django App
-      {% endblock %}
+        {% block title %}
+            Django App
+        {% endblock %}
     </title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
-    <style>
-      .navbar {
-        background-color: #1f201d; /* Black background */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
-      }
-      .navbar .nav-link,
-      .navbar .navbar-brand {
-        color: #ffffff !important; /* White text */
-      }
-      .nav-link:hover {
-        color: #cccccc !important; /* Slightly lighter text on hover */
-      }
-    </style>
-  </head>
-  <body>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous" />
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+  <style>
+    .navbar {
+      background-color: #1f201d; /* Black background */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 50px;
+      padding: 20px;
+      z-index: 99;
+    }
+    .navbar .nav-link,
+    .navbar .navbar-brand {
+      color: #ffffff !important; /* White text */
+    }
+    .nav-link:hover {
+      color: #cccccc !important; /* Slightly lighter text on hover */
+    }
+    .nav-link-after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 0;
+      height: 3px;
+      background: #fff;
+      border-radius: 5px;
+      transition: width 0.5s;
+    }
+    .nav-item:hover .nav-link-after {
+      width: 100%;
+    }
+    #map {
+      height: 500px;
+    }
+    .availability-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Add some space at the top */
+  }
+
+  .availability-box {
+    padding: 15px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: center;
+    height: 70px;
+    margin-bottom: 20px;
+  }
+
+  .availability-bar {
+    margin-bottom: 20px;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 25px;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+</style>
+</head>
+<body>
     <nav class="navbar navbar-expand-lg">
-      <a class="navbar-brand" href="{% url 'home' %}">Taxi app</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-item nav-link" id="home" href="{% url 'home' %}" style="position: relative; font-size: 1.1em; text-decoration: none; font-weight: 500; margin-left: 40px;">
-              Home
-              <span class="nav-link-after"></span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-item nav-link" id="about" href="/about" style="position: relative; font-size: 1.1em; text-decoration: none; font-weight: 500; margin-left: 40px;">
-              About
-              <span class="nav-link-after"></span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-item nav-link" id="about" href="{% url 'contact' %}" style="position: relative; font-size: 1.1em; text-decoration: none; font-weight: 500; margin-left: 40px;">
-              Contact
-              <span class="nav-link-after"></span>
-            </a>
-          </li>
-        </ul>
-      </div>
+        <a class="navbar-brand" href="{% url 'home' %}">Taxi app</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-item nav-link" id="home" href="{% url 'home' %}" style="position: relative; font-size: 1.1em; text-decoration: none; font-weight: 500; margin-left: 40px;">
+                        Home
+                        <span class="nav-link-after"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item nav-link" id="about" href="{% url 'about' %}" style="position: relative; font-size: 1.1em; text-decoration: none; font-weight: 500; margin-left: 40px;">
+                        About
+                        <span class="nav-link-after"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item nav-link" id="contact" href="{% url 'contact' %}" style="position: relative; font-size: 1.1em; text-decoration: none; font-weight: 500; margin-left: 40px;">
+                        Contact
+                        <span class="nav-link-after"></span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <!-- If user is authenticated -->
+                    <li class="nav-item">
+                        <a class="nav-item nav-link" href="{% url 'logout' %}">
+                            Logout
+                        </a>
+                    </li>
+                    {% if user.is_admin %}
+                        <!-- Admin Links -->
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" href="{% url 'admin_dashboard' %}">
+                                Admin Dashboard
+                            </a>
+                        </li>
+                    {% elif user.is_driver %}
+                        <!-- Driver Links -->
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" href="{% url 'driver_dashboard' %}">
+                                Driver Dashboard
+                            </a>
+                        </li>
+                    {% elif user.is_client %}
+                        <!-- Client Links -->
+                        <li class="nav-item">
+                            <a class="nav-item nav-link" href="{% url 'client_dashboard' %}">
+                                Client Dashboard
+                            </a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <!-- If user is not authenticated -->
+                    <li class="nav-item">
+                        <a class="nav-item nav-link" href="{% url 'login' %}">
+                            Login
+                        </a>
+                    </li>
+                    <!-- Registration Links -->
+                    <li class="nav-item">
+                        <a class="nav-item nav-link" href="{% url 'register' %}?role=admin">
+                            Register as Admin
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item nav-link" href="{% url 'register' %}?role=driver">
+                            Register as Taxi Driver
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-item nav-link" href="{% url 'register' %}?role=client">
+                            Register as Client
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
-    <div class="container">{% block content %} {% endblock %}</div>
+    <div class="container">
+        {% block content %} 
+        {% endblock %}
+    </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-  </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+</body>
 </html>
